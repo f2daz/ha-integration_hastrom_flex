@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Stadtwerk Haßfurt haStrom Flex einrichten",
+        "description": "Wählen Sie Ihren Tarif und konfigurieren Sie optional zusätzliche Kosten.\n\n**Hinweis zu zusätzlichen Kosten:**\nSie können optional zusätzliche Kosten wie z.B. die anteilige Grundgebühr pro kWh hinzufügen. Lassen Sie das Feld leer, wenn Sie nur den reinen Strompreis verwenden möchten.\n\n**Beispiele:**\n• Leer lassen = Keine zusätzlichen Kosten\n• `0.5` = Feste 0,5 ct/kWh Aufschlag\n• `(210.06 / 365 / 24)` = Jahresgrundgebühr auf Stunden umgerechnet",
+        "data": {
+          "tariff": "Tarif",
+          "additional_costs": "Zusätzliche Kosten pro kWh in ct (optional)"
+        },
+        "data_description": {
+          "tariff": "Wählen Sie Ihren haStrom Flex Tarif",
+          "additional_costs": "Zusätzlicher Aufschlag pro kWh in Cent. Beispiel: 0.5 für 0,5 ct/kWh oder leer lassen für keine zusätzlichen Kosten"
+        }
+      }
+    },
+    "error": {
+      "invalid_template": "Die eingegebene Formel ist ungültig. Bitte überprüfen Sie die Syntax oder lassen Sie das Feld leer."
+    },
+    "abort": {
+      "already_configured": "Diese Tarif-Konfiguration existiert bereits."
+    }
+  }
+}

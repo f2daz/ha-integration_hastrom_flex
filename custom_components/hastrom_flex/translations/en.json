@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Stadtwerk Haßfurt haStrom Flex",
+        "description": "Select your tariff and optionally configure additional costs.\n\n**Note on additional costs:**\nYou can optionally add additional costs such as the proportional base fee per kWh. Leave the field empty if you only want to use the pure electricity price.\n\n**Examples:**\n• Leave empty = No additional costs\n• `0.5` = Fixed 0.5 ct/kWh surcharge\n• `(210.06 / 365 / 24)` = Annual base fee converted to hourly rate",
+        "data": {
+          "tariff": "Tariff",
+          "additional_costs": "Additional costs per kWh in ct (optional)"
+        },
+        "data_description": {
+          "tariff": "Select your haStrom Flex tariff",
+          "additional_costs": "Additional surcharge per kWh in cents. Example: 0.5 for 0.5 ct/kWh or leave empty for no additional costs"
+        }
+      }
+    },
+    "error": {
+      "invalid_template": "The entered formula is invalid. Please check the syntax or leave the field empty."
+    },
+    "abort": {
+      "already_configured": "This tariff configuration already exists."
+    }
+  }
+}

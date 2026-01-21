@@ -1,0 +1,12 @@
+{
+  "domain": "hastrom_flex",
+  "name": "Stadtwerk Haßfurt haStrom Flex",
+  "codeowners": ["@f2daz"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/f2daz/ha-integration_hastrom_flex",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/f2daz/ha-integration_hastrom_flex/issues",
+  "requirements": [],
+  "version": "1.1.0"
+}
