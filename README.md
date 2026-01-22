@@ -183,7 +183,7 @@ Die Integration nutzt die öffentliche API des Stadtwerk Haßfurt:
 ### Sensor zeigt keine Daten
 
 1. Überprüfen Sie die Home Assistant Logs: `Einstellungen` → `System` → `Protokolle`
-2. Stellen Sie sicher, dass Ihre Home Assistant Instanz `http://eex.stwhas.de` erreichen kann
+2. Stellen Sie sicher, dass Ihre Home Assistant Instanz `http://eex.stwhas.de` erreichen kann (WICHTIG: http, nicht https!)
 3. Warten Sie bis zur nächsten vollen Stunde (Daten werden alle 15 Minuten aktualisiert)
 
 ### Morgige Preise nicht verfügbar
