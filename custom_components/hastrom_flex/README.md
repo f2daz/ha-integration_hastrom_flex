@@ -28,8 +28,9 @@ Pro eingerichtetem Tarif entsteht ein Gerät mit **sieben** Sensoren:
 > `sensor.hastrom_flex_flex_pro_current_price` — das ist so gewollt.
 >
 > Home Assistant vergibt die entity_id einmalig beim ersten Anlegen und ändert sie
-> danach nicht mehr von selbst. Wer umbenannt hat oder aus einer früheren Version
-> kommt, hat abweichende IDs. Im Zweifel nachsehen unter
+> danach nicht mehr von selbst — auch ein Update der Integration lässt bestehende
+> IDs unangetastet. Wer umbenannt hat oder aus einer früheren Version kommt, hat
+> deshalb möglicherweise abweichende IDs. Im Zweifel nachsehen unter
 > **Entwicklerwerkzeuge → Zustände**, Filter `hastrom_flex`.
 
 Die fünf Preis-Sensoren tragen `state_class: measurement` und landen damit in der

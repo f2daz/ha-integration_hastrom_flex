@@ -152,7 +152,7 @@ Statistik-Historie.
 
 HA leitet die entity_id nur beim **ersten** Anlegen ab und schreibt sie dann in
 der Registry fest. Sie folgt späteren Änderungen an `name` oder `unique_id` also
-nicht — weshalb sich aus einer beobachteten entity_id nie zurückschließen lässt,
+nicht, und ein Update der Integration ändert bestehende IDs ebenfalls nicht — weshalb sich aus einer beobachteten entity_id nie zurückschließen lässt,
 welcher Code sie erzeugt hat. Für Aussagen darüber, was eine *Neu*installation
 bekommt, reicht eine bestehende Instanz nicht; das zeigt nur ein frischer
 Aufsatz. `has_entity_name`, `suggested_object_id` und `entity_namespace` sind
