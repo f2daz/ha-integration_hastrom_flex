@@ -140,8 +140,11 @@ Zwei READMEs mit unterschiedlicher Aufgabe:
 Beide waren schon einmal auseinandergelaufen (die innere beschrieb bis 1.1.1 noch
 das Ein-Sensor-Layout vor 1.1.0). Wer Sensoren oder Attribute ändert, prüft beide.
 
-**Ungeklärt:** Die Tabelle in der Wurzel-README nennt entity_ids der Form
-`sensor.hastrom_flex_{tariff}_current_price`. HA leitet die entity_id aber aus dem
-Anzeigenamen ab, was auf `sensor.hastrom_flex_pro_aktueller_preis` hinausliefe.
-Nicht an einer laufenden Instanz verifiziert — die innere README umgeht das
-bewusst mit einem Platzhalter.
+**entity_id vs. Anzeigename:** Beide entstehen aus verschiedenen Quellen und
+sehen deshalb unterschiedlich aus. Die entity_id folgt der `unique_id`
+(`sensor.hastrom_flex_{tariff}_{key}`, englisch), der Anzeigename kommt aus der
+`name`-Property (`haStrom Flex Pro Aktueller Preis`, deutsch). An einer laufenden
+Instanz gegen die Entity Registry geprüft. Das doppelte `flex_flex` bei
+`tariff="flex_pro"` ist kein Fehler, sondern folgt aus dem Präfix in der
+`unique_id`. Wer `unique_id` ändert, bricht bestehende Automationen **und** die
+Statistik-Historie.

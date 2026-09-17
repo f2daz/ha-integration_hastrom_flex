@@ -9,25 +9,25 @@ daran hängen.
 
 Pro eingerichtetem Tarif entsteht ein Gerät mit **sieben** Sensoren:
 
-| Anzeigename | Zustand | Zweck |
+| entity_id | Anzeigename | Zweck |
 |---|---|---|
-| `<Tarif> Aktueller Preis` | Preis in ct/kWh | Preis der laufenden Stunde, inkl. zusätzlicher Kosten |
-| `<Tarif> Durchschnitt` | Preis in ct/kWh | Mittelwert heute |
-| `<Tarif> Minimum` | Preis in ct/kWh | Niedrigster Preis heute |
-| `<Tarif> Maximum` | Preis in ct/kWh | Höchster Preis heute |
-| `<Tarif> Median` | Preis in ct/kWh | Median heute |
-| `<Tarif> Preise Heute` | z. B. `24 Stunden` | Sammelsensor, Preise im Attribut |
-| `<Tarif> Preise Morgen` | z. B. `Noch nicht verfügbar` | Sammelsensor, ab ca. 13 Uhr gefüllt |
+| `sensor.hastrom_flex_<tarif>_current_price` | `<Tarif> Aktueller Preis` | Preis der laufenden Stunde, inkl. zusätzlicher Kosten |
+| `sensor.hastrom_flex_<tarif>_average` | `<Tarif> Durchschnitt` | Mittelwert heute |
+| `sensor.hastrom_flex_<tarif>_min` | `<Tarif> Minimum` | Niedrigster Preis heute |
+| `sensor.hastrom_flex_<tarif>_max` | `<Tarif> Maximum` | Höchster Preis heute |
+| `sensor.hastrom_flex_<tarif>_median` | `<Tarif> Median` | Median heute |
+| `sensor.hastrom_flex_<tarif>_prices_today` | `<Tarif> Preise Heute` | Sammelsensor, Preise im Attribut |
+| `sensor.hastrom_flex_<tarif>_prices_tomorrow` | `<Tarif> Preise Morgen` | Sammelsensor, ab ca. 13 Uhr gefüllt |
 
-`<Tarif>` ist „haStrom Flex", „haStrom Flex Pro" oder „EPEX Spot (Raw)".
+`<tarif>` ist `flex`, `flex_pro` oder `raw`; `<Tarif>` entsprechend
+„haStrom Flex", „haStrom Flex Pro" oder „EPEX Spot (Raw)".
 
-> **Zur entity_id:** Home Assistant bildet sie beim ersten Anlegen aus dem
-> Anzeigenamen und macht sie danach nicht mehr von selbst rückgängig. Sie kann
-> also je nach Instanz abweichen, etwa wenn Entitäten umbenannt wurden oder aus
-> einer älteren Version stammen. Die tatsächlichen IDs stehen unter
-> **Entwicklerwerkzeuge → Zustände**, Filter `hastrom_flex`. In den Beispielen
-> unten steht `sensor.DEIN_PREIS_SENSOR` als Platzhalter für den
-> „Aktueller Preis"-Sensor.
+> **entity_id und Anzeigename unterscheiden sich.** Die entity_id ist englisch
+> und folgt der internen `unique_id`, der angezeigte Name ist deutsch. Bei
+> `flex_pro` entsteht dabei das doppelte `flex_flex`, etwa
+> `sensor.hastrom_flex_flex_pro_current_price` — das ist so gewollt. Wer
+> Entitäten in Home Assistant umbenannt hat, hat abweichende IDs; nachsehen unter
+> **Entwicklerwerkzeuge → Zustände**, Filter `hastrom_flex`.
 
 Die fünf Preis-Sensoren tragen `state_class: measurement` und landen damit in der
 Langzeitstatistik. Bewusst **ohne** `device_class`: `monetary` verlangt eine reine
@@ -67,7 +67,7 @@ automation:
   - alias: "Waschmaschine bei günstigem Preis"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.DEIN_PREIS_SENSOR
+        entity_id: sensor.hastrom_flex_flex_current_price
         below: 20
     condition:
       - condition: time
@@ -86,7 +86,7 @@ automation:
   - alias: "Strompreise morgen"
     trigger:
       - platform: state
-        entity_id: sensor.DEIN_PREIS_SENSOR
+        entity_id: sensor.hastrom_flex_flex_current_price
         attribute: tomorrow_valid
         to: true
     action:
@@ -94,8 +94,8 @@ automation:
         data:
           title: "Strompreise morgen"
           message: >
-            Minimum: {{ state_attr('sensor.DEIN_PREIS_SENSOR', 'min') }} ct/kWh,
-            Durchschnitt: {{ state_attr('sensor.DEIN_PREIS_SENSOR', 'average') }} ct/kWh
+            Minimum: {{ state_attr('sensor.hastrom_flex_flex_current_price', 'min') }} ct/kWh,
+            Durchschnitt: {{ state_attr('sensor.hastrom_flex_flex_current_price', 'average') }} ct/kWh
 ```
 
 ### Anzahl günstiger Stunden heute
@@ -106,8 +106,8 @@ template:
       - name: "Günstige Stunden heute"
         unit_of_measurement: "h"
         state: >
-          {% set prices = state_attr('sensor.DEIN_PREIS_SENSOR', 'today') or [] %}
-          {% set min_price = state_attr('sensor.DEIN_PREIS_SENSOR', 'min') %}
+          {% set prices = state_attr('sensor.hastrom_flex_flex_current_price', 'today') or [] %}
+          {% set min_price = state_attr('sensor.hastrom_flex_flex_current_price', 'min') %}
           {% if prices and min_price is not none %}
             {{ prices | select('le', min_price * 1.1) | list | count }}
           {% else %}
@@ -130,7 +130,7 @@ now:
 span:
   start: day
 series:
-  - entity: sensor.DEIN_PREIS_SENSOR
+  - entity: sensor.hastrom_flex_flex_current_price
     name: Strompreis
     type: column
     data_generator: |
