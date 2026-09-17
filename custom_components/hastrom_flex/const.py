@@ -3,7 +3,7 @@ from __future__ import annotations
 
 DOMAIN = "hastrom_flex"
 NAME = "Stadtwerk Haßfurt haStrom Flex"
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 # API Configuration
 API_BASE_URL = "http://eex.stwhas.de/api"

@@ -10,7 +10,6 @@ from typing import Any
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import (
-    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
@@ -87,44 +86,30 @@ SENSOR_TYPES: dict[str, dict[str, Any]] = {
     "current_price": {
         "name_suffix": "Aktueller Preis",
         "icon": "mdi:flash",
-        "device_class": SensorDeviceClass.MONETARY,
-        "state_class": SensorStateClass.MEASUREMENT,
     },
     "average": {
         "name_suffix": "Durchschnitt",
         "icon": "mdi:chart-line",
-        "device_class": SensorDeviceClass.MONETARY,
-        "state_class": SensorStateClass.MEASUREMENT,
     },
     "min": {
         "name_suffix": "Minimum",
         "icon": "mdi:arrow-down-bold",
-        "device_class": SensorDeviceClass.MONETARY,
-        "state_class": SensorStateClass.MEASUREMENT,
     },
     "max": {
         "name_suffix": "Maximum",
         "icon": "mdi:arrow-up-bold",
-        "device_class": SensorDeviceClass.MONETARY,
-        "state_class": SensorStateClass.MEASUREMENT,
     },
     "median": {
         "name_suffix": "Median",
         "icon": "mdi:chart-bell-curve",
-        "device_class": SensorDeviceClass.MONETARY,
-        "state_class": SensorStateClass.MEASUREMENT,
     },
     "prices_today": {
         "name_suffix": "Preise Heute",
         "icon": "mdi:calendar-today",
-        "device_class": None,
-        "state_class": None,
     },
     "prices_tomorrow": {
         "name_suffix": "Preise Morgen",
         "icon": "mdi:calendar-arrow-right",
-        "device_class": None,
-        "state_class": None,
     },
 }
 
@@ -425,7 +410,6 @@ class HaStromFlexCurrentPriceSensor(HaStromFlexBaseSensor):
     """Sensor for current electricity price."""
 
     _sensor_type = "current_price"
-    _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_suggested_display_precision = 2
 
@@ -479,7 +463,6 @@ class HaStromFlexAverageSensor(HaStromFlexBaseSensor):
     """Sensor for average electricity price today."""
 
     _sensor_type = "average"
-    _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_suggested_display_precision = 2
 
@@ -514,7 +497,6 @@ class HaStromFlexMinSensor(HaStromFlexBaseSensor):
     """Sensor for minimum electricity price today."""
 
     _sensor_type = "min"
-    _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_suggested_display_precision = 2
 
@@ -549,7 +531,6 @@ class HaStromFlexMaxSensor(HaStromFlexBaseSensor):
     """Sensor for maximum electricity price today."""
 
     _sensor_type = "max"
-    _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_suggested_display_precision = 2
 
@@ -584,7 +565,6 @@ class HaStromFlexMedianSensor(HaStromFlexBaseSensor):
     """Sensor for median electricity price today."""
 
     _sensor_type = "median"
-    _attr_device_class = SensorDeviceClass.MONETARY
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_suggested_display_precision = 2
 
