@@ -137,8 +137,9 @@ Zwei READMEs mit unterschiedlicher Aufgabe:
 - `custom_components/hastrom_flex/README.md` — reine Entitäten- und
   Attributreferenz.
 
-Beide waren schon einmal auseinandergelaufen (die innere beschrieb bis 1.1.1 noch
-das Ein-Sensor-Layout vor 1.1.0). Wer Sensoren oder Attribute ändert, prüft beide.
+Beide waren auseinandergelaufen: Die innere beschrieb bis 1.1.1 ein
+Ein-Sensor-Layout mit Attributen, das der Code **nie** hatte — schon der erste
+Commit legt sieben Sensoren an. Wer Sensoren oder Attribute ändert, prüft beide.
 
 **entity_id vs. Anzeigename:** Beide entstehen aus verschiedenen Quellen und
 sehen deshalb unterschiedlich aus. Die entity_id folgt der `unique_id`
@@ -148,3 +149,11 @@ Instanz gegen die Entity Registry geprüft. Das doppelte `flex_flex` bei
 `tariff="flex_pro"` ist kein Fehler, sondern folgt aus dem Präfix in der
 `unique_id`. Wer `unique_id` ändert, bricht bestehende Automationen **und** die
 Statistik-Historie.
+
+HA leitet die entity_id nur beim **ersten** Anlegen ab und schreibt sie dann in
+der Registry fest. Sie folgt späteren Änderungen an `name` oder `unique_id` also
+nicht — weshalb sich aus einer beobachteten entity_id nie zurückschließen lässt,
+welcher Code sie erzeugt hat. Für Aussagen darüber, was eine *Neu*installation
+bekommt, reicht eine bestehende Instanz nicht; das zeigt nur ein frischer
+Aufsatz. `has_entity_name`, `suggested_object_id` und `entity_namespace` sind
+hier bewusst nirgends gesetzt.
