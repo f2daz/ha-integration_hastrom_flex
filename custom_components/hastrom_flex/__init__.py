@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Any, Callable
 
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import Platform
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -217,7 +217,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         api.listeners.append(cb_new_hour)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.add_update_listener(async_reload_entry)
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
     return True
 
@@ -234,12 +234,26 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-    if unload_ok:
-        if DOMAIN in hass.data:
-            # Cancel all listeners
+    if unload_ok and DOMAIN in hass.data:
+        # Der Datenhalter und seine Zeit-Listener werden von allen Entries
+        # gemeinsam genutzt und nur beim ersten Entry angelegt. Sie duerfen
+        # deshalb erst abgeraeumt werden, wenn kein anderer Entry mehr laeuft --
+        # sonst reisst das Entladen eines Tarifs die uebrigen mit.
+        # Der eigene Entry steht hier noch auf LOADED und wird ausgenommen.
+        other_entries_loaded = any(
+            other.entry_id != entry.entry_id
+            and other.state is ConfigEntryState.LOADED
+            for other in hass.config_entries.async_entries(DOMAIN)
+        )
+
+        if not other_entries_loaded:
             for unsub in hass.data[DOMAIN].listeners:
                 unsub()
             hass.data.pop(DOMAIN)
+        else:
+            _LOGGER.debug(
+                "Keeping shared data holder, other config entries still loaded"
+            )
 
     return unload_ok
 
@@ -251,5 +265,4 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         hass: Home Assistant instance
         entry: Config entry
     """
-    await async_unload_entry(hass, entry)
-    await async_setup_entry(hass, entry)
+    await hass.config_entries.async_reload(entry.entry_id)

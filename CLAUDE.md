@@ -53,9 +53,10 @@ HaStromFlexData (__init__.py)   Singleton in hass.data[DOMAIN], Cache today/tomo
 Dispatcher-Signale. Wichtige Konsequenzen:
 
 - `hass.data[DOMAIN]` wird nur beim **ersten** Config-Entry angelegt und trägt die
-  drei globalen Zeit-Listener. `async_unload_entry` entfernt es aber bei **jedem**
-  Unload — bei mehreren Entries (z. B. Flex + Flex Pro parallel) reißt das Entladen
-  eines Entries den anderen mit. Beim Anfassen dieses Bereichs beachten.
+  drei globalen Zeit-Listener; alle Entries teilen es sich. `async_unload_entry`
+  räumt es deshalb erst ab, wenn kein anderer Entry mehr `LOADED` ist. Diese
+  Asymmetrie — Aufbau beim ersten, Abbau beim letzten — muss erhalten bleiben,
+  sonst legt das Entladen eines Tarifs die übrigen still.
 - Jeder Sensor hält eine eigene Kopie von `_data_today`/`_data_tomorrow` und
   berechnet Preise, Statistik und `raw_*`-Listen für sich. Änderungen an der
   Preislogik gehören deshalb in `HaStromFlexBaseSensor`, nicht in die Unterklassen.
@@ -113,6 +114,11 @@ ablehnt.
 
 ## Konventionen
 
+- **Keine `device_class` an den Preis-Sensoren.** `SensorDeviceClass.MONETARY`
+  verlangt eine reine Währungseinheit und lässt als `state_class` nur `None` oder
+  `TOTAL` zu — die Einheit hier ist aber ct/kWh, und richtig ist `MEASUREMENT`.
+  Die Kombination MONETARY + MEASUREMENT erzeugt bei jedem Start eine Warnung je
+  Sensor. Nicht „wieder einbauen", auch nicht in `SENSOR_TYPES`.
 - **Versionsnummer steht an zwei Stellen**: `manifest.json` → `version` und
   `const.py` → `VERSION`. Immer beide bumpen.
 - Docstrings englisch, Inline-Kommentare und Benutzertexte deutsch — so gewachsen,
@@ -122,10 +128,20 @@ ablehnt.
   daran, nicht beiläufig ändern.
 - Übersetzungen in `translations/de.json` und `en.json` parallel pflegen.
 
-## Bekannte Doku-Abweichung
+## Dokumentation
 
-`custom_components/hastrom_flex/README.md` beschreibt noch das alte Layout mit
-**einem** Sensor (`sensor.hastrom_flex_flex`) plus Attributen. Der Code erzeugt seit
-v1.1.0 **sieben** Sensoren; die dort gelisteten Attribute hängen heute am
-`current_price`-Sensor. Der Root-`README.md` ist aktuell. Bei Doku-Änderungen ggf.
-beide angleichen.
+Zwei READMEs mit unterschiedlicher Aufgabe:
+
+- `README.md` (Wurzel) — Installation, Konfiguration, Tarife, Preisstruktur. Das
+  ist die Datei, die HACS rendert.
+- `custom_components/hastrom_flex/README.md` — reine Entitäten- und
+  Attributreferenz.
+
+Beide waren schon einmal auseinandergelaufen (die innere beschrieb bis 1.1.1 noch
+das Ein-Sensor-Layout vor 1.1.0). Wer Sensoren oder Attribute ändert, prüft beide.
+
+**Ungeklärt:** Die Tabelle in der Wurzel-README nennt entity_ids der Form
+`sensor.hastrom_flex_{tariff}_current_price`. HA leitet die entity_id aber aus dem
+Anzeigenamen ab, was auf `sensor.hastrom_flex_pro_aktueller_preis` hinausliefe.
+Nicht an einer laufenden Instanz verifiziert — die innere README umgeht das
+bewusst mit einem Platzhalter.
